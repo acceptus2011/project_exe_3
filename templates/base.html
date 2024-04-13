@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+<div>
+    <ul>
+        {% if user.is_authenticated %}
+            Hello {{ user.username }}
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="/">
+            <input type="submit" value="Logout">
+        </form>
+        {% else %}
+        {% endif %}
+        <li>
+            <a href="{% url 'login' %">Login</a>
+            <a href="{% url 'register' %">Register</a>
+        </li>
+    </ul>
+</div>
+<div>
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{%  block title %}
+    LIST OF PRODUCT
+{% endblock %}
+
+{% block content %}
+    {% for product in object_list %}
+        <form method="post" action="{% url 'purchase' %}">
+            {% csrf_token %}
+            {{ form }}
+            <input name="product_id" type="hidden" value="{{product.pk }}">
+            <input type="submit" value="Buy">
+        </form>
+        - Name - {{ product.name }} <br>
+        - Desc - {{ product.description }} <br>
+        - Price - {{ product.price }} <br>
+        - Amount  - {{ product.amount }} <br>
+        <img src="{{ product.picture.url}}" alt="Product desc" width="200" height="200">
+        <br>
+    {% endfor%}
+{% endblock %}
