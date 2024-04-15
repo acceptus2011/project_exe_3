@@ -1,11 +1,12 @@
 from django.contrib.auth import login
+from django.db import transaction
 from django.http import request
 from django.shortcuts import render
 from django.views.generic import TemplateView, CreateView, ListView
 from django.contrib import messages
 
 from myapp.forms import RegisterForm, PurchaseForm
-from myapp.models import Product
+from myapp.models import Product, Purchase
 
 
 # Create your views here.
@@ -27,12 +28,25 @@ class RegisterView(CreateView):
 
 
 class PurchaseView(CreateView):
-    queryset = Product.objects.all()
+    queryset = Purchase.objects.all()
     form_class = PurchaseForm
     success_url = '/'
 
     def get_form_kwargs(self):
-        product_id = self.request.POST.pop('product_id')
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
+
+    def form_valid(self, form):
+        purchase = form.save(commit=False)
+        user = self.request.user
+        product = form.product
+        purchase.user = user
+        purchase.product = product
+        product.amount -= purchase.quantity
+        user.wallet -= purchase.quantity * product.price
+        with transaction.atomic():
+            product.save()
+            purchase.save()
+            user.save()
+            return super().form_valid(form=form)

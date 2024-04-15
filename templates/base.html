@@ -5,10 +5,19 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li
+            {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
 <div>
     <ul>
         {% if user.is_authenticated %}
-            Hello {{ user.username }}
+            Hello {{ user.username }} your wallet {{ user.wallet }}
         <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <input type="hidden" name="next" value="/">

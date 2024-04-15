@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from pyexpat.errors import messages
+from django.contrib import messages
 
 from myapp.models import User, Purchase, Product
 
@@ -9,7 +10,6 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username',)
-
 
 
 class PurchaseForm(forms.ModelForm):
@@ -31,7 +31,11 @@ class PurchaseForm(forms.ModelForm):
         except product.DoesNotExist:
             messages.error(request, "Product does not exist")
             raise forms.ValidationError("Product does not exist")
-        quantity = cleaned_data.get('quantity')
-        if quantity > product.quantity:
+        quantity = int(cleaned_data.get('quantity'))
+        if quantity > product.amount:
             messages.error(request, "Not enough quantity available")
-            self.add_error( None, "Not enough quantity available")
+            self.add_error(None, "Not enough quantity available")
+        if quantity * product.price > request.user.wallet:
+            messages.error(request, "Insufficient funds")
+            self.add_error(None, "Insufficient funds")
+        self.product = product
