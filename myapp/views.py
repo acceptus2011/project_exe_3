@@ -1,7 +1,8 @@
 from django.contrib.auth import login
 from django.db import transaction
-from django.http import request
+from django.http import request, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView
 from django.contrib import messages
 
@@ -50,3 +51,12 @@ class PurchaseView(CreateView):
             purchase.save()
             user.save()
             return super().form_valid(form=form)
+
+    def form_invalid(self, form):
+        return HttpResponseRedirect(reverse_lazy('index'))
+
+class ProfileView(ListView):
+    template_name = 'profile.html'
+
+    def get_queryset(self):
+        return Purchase.objects.filter(user=self.request.user)

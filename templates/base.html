@@ -32,6 +32,13 @@
     </ul>
 </div>
 <div>
+    {% if user.is_superuser %}
+    {% else %}
+        <a href="{% url 'index' %}">List</a>
+        <a href="{% url 'profile' %}">My purchases</a>
+    {% endif %}
+</div>
+<div>
     {% block content %}
     {% endblock %}
 </div>

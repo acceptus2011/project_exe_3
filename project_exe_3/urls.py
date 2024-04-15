@@ -20,7 +20,7 @@ from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
 
-from myapp.views import RegisterView, ProductListView, PurchaseView
+from myapp.views import RegisterView, ProductListView, PurchaseView, ProfileView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +29,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('', ProductListView.as_view(), name='index'),
     path('purchase/', PurchaseView.as_view(), name='purchase'),
+    path('profile/', ProfileView.as_view(), name='profile'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
