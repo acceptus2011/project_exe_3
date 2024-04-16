@@ -19,8 +19,11 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
+from myapp.views import ReturnCreateView
 
 from myapp.views import RegisterView, ProductListView, PurchaseView, ProfileView
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +33,7 @@ urlpatterns = [
     path('', ProductListView.as_view(), name='index'),
     path('purchase/', PurchaseView.as_view(), name='purchase'),
     path('profile/', ProfileView.as_view(), name='profile'),
+    path('create-return/', ReturnCreateView.as_view(), name='create_return'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

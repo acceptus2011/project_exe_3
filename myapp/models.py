@@ -19,6 +19,7 @@ class Product(models.Model):
 
 
 class Purchase(models.Model):
+    DoesNotExist = None
     objects = None
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

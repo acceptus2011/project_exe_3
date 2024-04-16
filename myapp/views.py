@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView
 from django.contrib import messages
 
-from myapp.forms import RegisterForm, PurchaseForm
+from myapp.forms import RegisterForm, PurchaseForm, ReturnForm
 from myapp.models import Product, Purchase
 
 
@@ -60,3 +60,23 @@ class ProfileView(ListView):
 
     def get_queryset(self):
         return Purchase.objects.filter(user=self.request.user)
+
+class ReturnCreateView(CreateView):
+    form_class = ReturnForm
+    success_url = reverse_lazy('profile')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_valid(selfself, form):
+        ret = form.save(commit=False)
+        ret.purchase = form.purchase
+        ret.save()
+        return  super().form_valid(form=form)
+
+    def form_invalid(self, form):
+        return HttpResponseRedirect(reverse_lazy('profile'))
+
+

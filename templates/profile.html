@@ -7,6 +7,11 @@
     {% for purchase in object_list %}
         Quantity - {{ purchase.quantity }} <br>
         Product - {{ purchase.product.name }} <br>
+        <form method="post" action="{% url 'create_return' %}">
+        {% csrf_token %}
+        <input type="hidden" name="purchase_id" value="{{ purchase_pk }}">
+        <input type="submit" value="Return">
+        </form>
         <br>
     {% endfor %}
 {% endblock %}
