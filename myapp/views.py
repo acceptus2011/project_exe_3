@@ -3,11 +3,11 @@ from django.db import transaction
 from django.http import request, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, ListView
+from django.views.generic import TemplateView, CreateView, ListView, DeleteView
 from django.contrib import messages
 
 from myapp.forms import RegisterForm, PurchaseForm, ReturnForm
-from myapp.models import Product, Purchase
+from myapp.models import Product, Purchase, Return
 
 
 # Create your views here.
@@ -55,11 +55,13 @@ class PurchaseView(CreateView):
     def form_invalid(self, form):
         return HttpResponseRedirect(reverse_lazy('index'))
 
+
 class ProfileView(ListView):
     template_name = 'profile.html'
 
     def get_queryset(self):
         return Purchase.objects.filter(user=self.request.user)
+
 
 class ReturnCreateView(CreateView):
     form_class = ReturnForm
@@ -74,9 +76,27 @@ class ReturnCreateView(CreateView):
         ret = form.save(commit=False)
         ret.purchase = form.purchase
         ret.save()
-        return  super().form_valid(form=form)
+        return super().form_valid(form=form)
 
     def form_invalid(self, form):
         return HttpResponseRedirect(reverse_lazy('profile'))
 
 
+class ReturnApproveView(DeleteView):
+    queryset = Return.objects.all()
+
+
+class ReturnDeclineView(DeleteView):
+    queryset = Return.objects.all()
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = '__all__'
+    template_name = 'create_product.html'
+    success_url = reverse_lazy('index')
+
+
+class ReturnListView(ListView):
+    queryset = Return.objects.all()
+    template_name = 'returns_list.html'

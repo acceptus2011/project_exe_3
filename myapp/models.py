@@ -28,5 +28,6 @@ class Purchase(models.Model):
 
 
 class Return(models.Model):
+    objects = None
     purchase = models.OneToOneField(Purchase, on_delete=models.CASCADE)
 # Create your models here.
