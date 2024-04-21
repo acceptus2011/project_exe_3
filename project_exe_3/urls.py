@@ -19,8 +19,13 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
+from myapp.views import ReturnCreateView, ReturnApproveView, ReturnDeclineView, ProductCreateView, ReturnListView
 
-from myapp.views import RegisterView, ProductListView, PurchaseView
+from myapp.views import RegisterView, ProductListView, PurchaseView, ProfileView
+
+
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +34,12 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('', ProductListView.as_view(), name='index'),
     path('purchase/', PurchaseView.as_view(), name='purchase'),
+    path('profile/', ProfileView.as_view(), name='profile'),
+    path('create-return/', ReturnCreateView.as_view(), name='create_return'),
+    path('return-approve/<int:pk>', ReturnApproveView.as_view(), name='return_approve'),
+    path('return-decline/<int:pk>', ReturnDeclineView.as_view(), name='return_decline'),
+    path('product-create/', ProductCreateView.as_view(), name='product_create'),
+    path('return_list/', ReturnListView.as_view(), name='returns_list'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

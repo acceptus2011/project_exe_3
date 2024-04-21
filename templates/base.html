@@ -32,6 +32,15 @@
     </ul>
 </div>
 <div>
+    {% if user.is_superuser %}
+    <a href="{% url 'product_create' %}">Create product</a>
+    <a href="{% url 'returns_list' %}" >Returns</a>
+    {% else %}
+        <a href="{% url 'index' %}">List</a>
+        <a href="{% url 'profile' %}">My purchases</a>
+    {% endif %}
+</div>
+<div>
     {% block content %}
     {% endblock %}
 </div>
