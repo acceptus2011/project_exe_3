@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+import myapp.api.authentication
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -131,3 +133,17 @@ AUTH_USER_MODEL = 'myapp.User'
 LOGIN_REDIRECT_URL = '/'
 
 RETURN_ALLOWED_TIME = 60
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+'DEFAULT_AUTHENTICATION_CLASSES': [
+        'myapp.api.authentication.TokenExpiredAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2
+}
+
+TOKEN_EXPIRE_SECONDS = 10 * 60 * 60
