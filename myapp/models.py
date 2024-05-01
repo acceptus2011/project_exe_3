@@ -10,6 +10,7 @@ class User(AbstractUser):
 
 
 class Product(models.Model):
+    DoesNotExist = None
     objects = None
     description = models.TextField()
     name = models.TextField()

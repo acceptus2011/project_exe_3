@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.template.context_processors import request
 from django.template.defaulttags import now
 from django.conf import settings
 from pyexpat.errors import messages
@@ -22,27 +23,41 @@ class PurchaseForm(forms.ModelForm):
         fields = ('quantity',)
 
     def __init__(self, *args, **kwargs):
+        self.product = None
         self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
 
     def clean(self):
         cleaned_data = super().clean()
-        request = self.request
+        product = self.check_product_exist()
+        quantity = int(cleaned_data.get('quantity'))
+        self.checj_quantity(quantity, product)
+        self.check_wallet(quantity, product)
+        self.product = product
+        return  cleaned_data
+
+    def check_product_exist(self):
         product_id = self.data.get('product_id')
         product = Product.objects.get(pk=product_id)
         try:
             product = Product.objects.get(pk=product_id)
         except Product.DoesNotExist:
-            messages.error(request, "Product does not exist")
+            messages.error(self.request, "Product does not exist")
             raise forms.ValidationError("Product does not exist")
-        quantity = int(cleaned_data.get('quantity'))
+        return product
+
+    def check_quantity(self, quantity, product):
         if quantity > product.amount:
-            messages.error(request, "Not enough quantity available")
+            messages.error(self.request, "Not enough quantity available")
             self.add_error(None, "Not enough quantity available")
-        if quantity * product.price > request.user.wallet:
-            messages.error(request, "Insufficient funds")
+
+    def check_wallet(self, quantity, product):
+        if quantity * product.price > self.request.user.wallet:
+            messages.error(self.request, "Insufficient funds")
             self.add_error(None, "Insufficient funds")
-        self.product = product
+
+    def checj_quantity(self, quantity, product):
+        pass
 
 
 class ReturnForm(forms.ModelForm):

@@ -15,6 +15,7 @@ from myapp.models import Product, Purchase, Return
 
 # Create your views here.
 class ProductListView(LoginRequiredMixin, ListView):
+    login_url = reverse_lazy('login')
     template_name = 'index.html'
     queryset = Product.objects.all()
     extra_context = {"form": PurchaseForm}
